@@ -28,36 +28,40 @@ def safe_scaled(it, start, end):
 
 # ---------------------
 
-def task_1():
+def sub_task_1():
     yield 1
     yield 30
     yield 75
     yield 100
 
 
-def task_2():
+def sub_task_2():
     yield from range(10, 100, 21)
 
 
-def task_3():
+def sub_task_3():
     yield -5
     yield 55
     yield 23
     yield 98
 
 
-def main():
+def task_1():
     yield 10
 
-    yield from safe_scaled(task_1(), 10, 30)
+    yield from safe_scaled(sub_task_1(), 10, 30)
 
-    yield from safe_scaled(range(10, 100, 25), 30, 45)
+    yield from safe_scaled(sub_task_2(10, 100, 25), 30, 45)
 
-    yield from safe_scaled(task_3(), 45, 80)
+    yield from safe_scaled(sub_task_3(), 45, 80)
     yield 80
     yield 99
 
 
-if __name__ == "__main__":
+def main():
     for i in safe_scaled(main(), 0, 100):
         print(i)
+    
+
+if __name__ == "__main__":
+    main()
