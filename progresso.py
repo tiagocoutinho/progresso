@@ -1,12 +1,35 @@
-def scale(value, start, end):
+#
+# This file is part of the progresso project
+#
+# Copyright (c) 2024 Tiago Coutinho
+# Distributed under the GPLv3 license. See LICENSE for more info.
+
+__version__ = "0.1.0"
+
+
+from typing import TypeVar
+from collections.abc import Iterable
+
+T = TypeVar("T")
+
+
+def scale(value: float, start: float, end: float) -> float:
+    """
+    Returns the value (expected to be in [0, 100])
+    scaled between the given range
+    """
+    if any (not 0 <= x <= 100 for x in (value, start, end)):
+        raise ValueError("Expected value in range [0, 100]")
+    if not start <= end:
+        raise ValueError("Expected start <= end")
     return start + value * (end - start) / 100
 
 
-def naive_scaled(it, start, end):
+def naive_scaled(it: Iterable[T], start: float, end: float) -> Iterable[T]:
     return (scale(value, start, end) for value in it)
 
 
-def bound_scale(it):
+def bound_scale(it: Iterable[T]) -> Iterable[T]:
     """
     Ensures that:
     * values are bound between [0, 100]
@@ -22,9 +45,11 @@ def bound_scale(it):
         yield 100
 
 
-def safe_scaled(it, start, end):
+def safe_scaled(it: Iterable[T], start: float, end: float) -> Iterable[T]:
     return naive_scaled(bound_scale(it), start, end)
 
+
+scaled = safe_scaled
 
 # ---------------------
 
