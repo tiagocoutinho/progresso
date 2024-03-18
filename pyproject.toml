@@ -81,3 +81,12 @@ target-version = "py39"
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "--cov=progresso",
+    "--cov-report=html", "--cov-report=term",
+    "--durations=2", "--verbose"
+]
+testpaths = ["tests"]
