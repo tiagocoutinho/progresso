@@ -56,8 +56,8 @@ build-backend = "setuptools.build_meta"
 version = {attr = "progresso.__version__"}
 readme = {file = ["README.md"], content-type = "text/markdown"}
 
-[tool.setuptools.packages.find]
-include = ["progresso"]
+[tool.setuptools]
+py-modules = ["progresso"]
 
 [tool.ruff]
 lint.select = [
@@ -89,4 +89,3 @@ addopts = [
     "--cov-report=html", "--cov-report=term",
     "--durations=2", "--verbose"
 ]
-testpaths = ["tests"]
