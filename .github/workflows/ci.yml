@@ -40,8 +40,8 @@ jobs:
         pip install --disable-pip-version-check -e .[dev]
     - name: Linting
       run: |
-        ruff check --diff --output-format=github progresso tests
-        ruff format progresso tests --check
+        ruff check --diff --output-format=github progresso.py tests
+        ruff format progresso.py tests --check
     - name: Build package
       run: |
         python -m build
