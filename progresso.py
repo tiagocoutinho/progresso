@@ -1,14 +1,52 @@
-#
 # This file is part of the progresso project
 #
 # Copyright (c) 2024 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+"""
+A simple library that aims at making hierarchical progress
+iterators / generators easy.
+
+A single point API: `progresso(it: Iterable, start: float = 0, end: float = 100) -> Iterable`
+
+Example:
+
+```python
+>>> def task_1():
+...     yield 10
+...     yield 90
+...     yield 100
+...
+
+>>> def task_2():
+...     yield 5
+...     yield 2
+...     yield 99
+...
+
+>>> def task():
+...     yield 30
+...     yield from progresso(task_1(), 30, 60)
+...     yield from progresso(task_2(), 60, 90)
+
+>>> for i in progresso(task()):
+...     print(i)
+30.0
+33.0
+57.0
+60.0
+61.5
+89.7
+90.0
+100.0
+```
+"""
+
 __version__ = "0.1.0"
 
 
-from typing import TypeVar
 from collections.abc import Iterable
+from typing import TypeVar
 
 T = TypeVar("T")
 
@@ -18,7 +56,7 @@ def scale(value: float, start: float, end: float) -> float:
     Returns the value (expected to be in [0, 100])
     scaled between the given range
     """
-    if any (not 0 <= x <= 100 for x in (value, start, end)):
+    if any(not 0 <= x <= 100 for x in (value, start, end)):
         raise ValueError("Expected value in range [0, 100]")
     if not start <= end:
         raise ValueError("Expected start <= end")
@@ -26,32 +64,46 @@ def scale(value: float, start: float, end: float) -> float:
 
 
 def naive_scaled(it: Iterable[T], start: float, end: float) -> Iterable[T]:
+    """
+    For each value in the given *it*, scales it to the range [start, end] and
+    emits that result
+    The it is expected to give progressively increasing values between [0, 100]
+    The start and end are expected to be in the range [0, 100] and it is expected
+    that end >= start.
+    """
     return (scale(value, start, end) for value in it)
 
 
-def bound_scale(it: Iterable[T]) -> Iterable[T]:
+def bound_scaled(it: Iterable[T]) -> Iterable[T]:
     """
-    Ensures that:
-    * values are bound between [0, 100]
-    * value is never less than previous value
+    For each value in the given *it*, te yields it but first ensures that:
+
+    * value is bound between [0, 100]
+    * value is never less or equal than previous value
     * last value is 100
     """
     last = 0
-    for value in it:
+    for i, value in enumerate(it):
         value = min(max(last, value), 100)
-        yield value
+        if value > last or not i:
+            yield value
         last = value
     if last < 100:
         yield 100
 
 
-def safe_scaled(it: Iterable[T], start: float, end: float) -> Iterable[T]:
-    return naive_scaled(bound_scale(it), start, end)
+def safe_scaled(it: Iterable[T], start: float = 0, end: float = 100) -> Iterable[T]:
+    """
+    Transforms the given *it* ensuring the values are strictly progressive in
+    the range [start, end]
+    """
+    return naive_scaled(bound_scaled(it), start, end)
 
 
-scaled = safe_scaled
+progresso = safe_scaled
 
 # ---------------------
+
 
 def sub_task_1():
     yield 1
@@ -73,20 +125,24 @@ def sub_task_3():
 
 def task_1():
     yield 10
-
-    yield from safe_scaled(sub_task_1(), 10, 30)
-
-    yield from safe_scaled(sub_task_2(10, 100, 25), 30, 45)
-
-    yield from safe_scaled(sub_task_3(), 45, 80)
+    yield from progresso(sub_task_1(), 10, 30)
+    yield from progresso(sub_task_2(), 30, 45)
+    yield from progresso(sub_task_3(), 45, 80)
     yield 80
     yield 99
 
 
+def task_2():
+    yield from progresso(range(0, 100, 25), 0, 25)
+    yield from progresso(range(0, 100, 25), 25, 50)
+    yield from progresso(range(0, 100, 25), 50, 75)
+    yield from progresso(range(0, 100, 25), 75, 100)
+
+
 def main():
-    for i in safe_scaled(main(), 0, 100):
+    for i in progresso(task_2()):
         print(i)
-    
+
 
 if __name__ == "__main__":
     main()

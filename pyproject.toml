@@ -1,0 +1,83 @@
+# This file is part of the progresso project
+#
+# Copyright (c) 2024 Tiago Coutinho
+# Distributed under the GPLv3 license. See LICENSE for more info.
+
+[project]
+name = "progresso"
+description = "Make iterators yield progress"
+license = {text = "GPL-3.0-or-later"}
+authors = [
+    { name = "Jose Tiago Macara Coutinho", email = "coutinhotiago@gmail.com" }
+]
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "typing_extensions>=4.6,<5 ; python_version < '3.12'"
+]
+dynamic = ["version", "readme"]
+
+[project.urls]
+Documentation = "https://tiagocoutinho.github.io/progresso/"
+Homepage = "https://github.com/tiagocoutinho/progresso"
+Source = "https://github.com/tiagocoutinho/progresso"
+
+[project.optional-dependencies]
+dev = [
+    "build>=0.10.0",
+    "twine>=4.0.2",
+    "pytest>=7",
+    "pytest-cov>=4",
+    "hypothesis>=6",
+    "ruff>=0.3.0",
+]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "pygments",
+    "pymdown-extensions",
+]
+
+[build-system]
+requires = ["setuptools >= 40.9.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "progresso.__version__"}
+readme = {file = ["README.md"], content-type = "text/markdown"}
+
+[tool.setuptools.packages.find]
+include = ["progresso"]
+
+[tool.ruff]
+lint.select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP",  # pyupgrade
+]
+lint.ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+    "W191", # indentation contains tabs
+]
+line-length = 120
+indent-width = 4
+target-version = "py39"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
