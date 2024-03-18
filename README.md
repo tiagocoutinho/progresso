@@ -1,5 +1,11 @@
 # progresso
 
+[![progresso][pypi-version]](https://pypi.python.org/pypi/progresso)
+[![Python Versions][pypi-python-versions]](https://pypi.python.org/pypi/progresso)
+![License][license]
+[![CI][CI]](https://github.com/tiagocoutinho/progresso/actions/workflows/ci.yml)
+
+
 A simple library that aims at making hierarchical progress
 iterators / generators easy.
 
@@ -36,3 +42,9 @@ Example:
 90.0
 100.0
 ```
+
+[pypi-python-versions]: https://img.shields.io/pypi/pyversions/progresso.svg
+[pypi-version]: https://img.shields.io/pypi/v/progresso.svg
+[pypi-status]: https://img.shields.io/pypi/status/progresso.svg
+[license]: https://img.shields.io/pypi/l/progresso.svg
+[CI]: https://github.com/tiagocoutinho/progresso/actions/workflows/ci.yml/badge.svg
