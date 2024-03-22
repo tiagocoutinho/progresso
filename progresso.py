@@ -85,8 +85,9 @@ def bound_scaled(it: Iterable[T]) -> Iterable[T]:
     last = 0
     for i, value in enumerate(it):
         value = min(max(last, value), 100)
-        if value > last or not i:
-            yield value
+        if i and value <= last:
+            continue
+        yield value
         last = value
     if last < 100:
         yield 100

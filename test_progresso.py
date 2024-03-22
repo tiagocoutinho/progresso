@@ -73,6 +73,8 @@ def test_progresso_basic():
 def test_progresso_negative():
     assert_progress([-1, 10, 100], [0, 10, 100])
 
+    assert_progress([-2, -3, -2, 10, 100], [0, 10, 100])
+
 
 def test_progresso_doesnt_reach_100():
     assert_progress([0, 10, 90], [0, 10, 90, 100])
