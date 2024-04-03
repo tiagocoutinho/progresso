@@ -63,7 +63,7 @@ def scale(value: float, start: float, end: float) -> float:
     return start + value * (end - start) / 100
 
 
-def naive_scaled(it: Iterable[T], start: float, end: float) -> Iterable[T]:
+def scaled(it: Iterable[T], start: float, end: float) -> Iterable[T]:
     """
     For each value in the given *it*, scales it to the range [start, end] and
     emits that result
@@ -98,4 +98,4 @@ def progresso(it: Iterable[T], start: float = 0, end: float = 100) -> Iterable[T
     Transforms the given *it* ensuring the values are strictly progressive in
     the range [start, end]
     """
-    return naive_scaled(bounded(it), start, end)
+    return scaled(bounded(it), start, end)
