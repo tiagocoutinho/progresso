@@ -51,46 +51,16 @@ from typing import TypeVar
 T = TypeVar("T")
 
 
-def scale(value: float, start: float, end: float) -> float:
+def scale(step: float, start: float, end: float) -> float:
     """
-    Returns the value (expected to be in [0, 100])
+    Returns the step (expected to be in [0, 100])
     scaled between the given range
     """
-    if any(not 0 <= x <= 100 for x in (value, start, end)):
+    if any(not 0 <= x <= 100 for x in (step, start, end)):
         raise ValueError("Expected value in range [0, 100]")
     if not start <= end:
         raise ValueError("Expected start <= end")
-    return start + value * (end - start) / 100
-
-
-def scaled(it: Iterable[T], start: float, end: float) -> Iterable[T]:
-    """
-    For each value in the given *it*, scales it to the range [start, end] and
-    emits that result
-    The it is expected to give progressively increasing values between [0, 100]
-    The start and end are expected to be in the range [0, 100] and it is expected
-    that end >= start.
-    """
-    return (scale(value, start, end) for value in it)
-
-
-def bounded(it: Iterable[T]) -> Iterable[T]:
-    """
-    For each value in the given *it*, yields it but first ensures that:
-
-    * value is bound between [0, 100]
-    * value is never less or equal than previous value
-    * last value is 100
-    """
-    last = 0
-    for i, value in enumerate(it):
-        value = min(max(last, value), 100)
-        if i and value <= last:
-            continue
-        yield value
-        last = value
-    if last < 100:
-        yield 100
+    return start + step * (end - start) / 100
 
 
 def progresso(it: Iterable[T], start: float = 0, end: float = 100) -> Iterable[T]:
@@ -98,4 +68,12 @@ def progresso(it: Iterable[T], start: float = 0, end: float = 100) -> Iterable[T
     Transforms the given *it* ensuring the values are strictly progressive in
     the range [start, end]
     """
-    return scaled(bounded(it), start, end)
+    last = 0
+    for i, step in enumerate(it):
+        step = min(max(last, step), 100)
+        if i and step <= last:
+            continue
+        yield scale(step, start, end)
+        last = step
+    if last < 100:
+        yield scale(100, start, end)
