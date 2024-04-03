@@ -93,12 +93,9 @@ def bound_scaled(it: Iterable[T]) -> Iterable[T]:
         yield 100
 
 
-def safe_scaled(it: Iterable[T], start: float = 0, end: float = 100) -> Iterable[T]:
+def progresso(it: Iterable[T], start: float = 0, end: float = 100) -> Iterable[T]:
     """
     Transforms the given *it* ensuring the values are strictly progressive in
     the range [start, end]
     """
     return naive_scaled(bound_scaled(it), start, end)
-
-
-progresso = safe_scaled
