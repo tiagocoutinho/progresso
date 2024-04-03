@@ -74,9 +74,9 @@ def naive_scaled(it: Iterable[T], start: float, end: float) -> Iterable[T]:
     return (scale(value, start, end) for value in it)
 
 
-def bound_scaled(it: Iterable[T]) -> Iterable[T]:
+def bounded(it: Iterable[T]) -> Iterable[T]:
     """
-    For each value in the given *it*, te yields it but first ensures that:
+    For each value in the given *it*, yields it but first ensures that:
 
     * value is bound between [0, 100]
     * value is never less or equal than previous value
@@ -98,4 +98,4 @@ def progresso(it: Iterable[T], start: float = 0, end: float = 100) -> Iterable[T
     Transforms the given *it* ensuring the values are strictly progressive in
     the range [start, end]
     """
-    return naive_scaled(bound_scaled(it), start, end)
+    return naive_scaled(bounded(it), start, end)
